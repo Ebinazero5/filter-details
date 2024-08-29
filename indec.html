@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Dropdown</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h1>Select Filter Type</h1>
+    <select id="filter-dropdown">
+        <option value="">Select a filter</option>
+        <option value="oil_filters">Oil Filters</option>
+        <option value="diesel_filters">Diesel Filters</option>
+        <option value="water_filters">Water Filters</option>
+        <option value="air_filters">Air Filters</option>
+        <option value="oil">Oil</option>
+        <option value="coolant">Coolant</option>
+        <option value="avr">AVR</option>
+        <option value="belts">Belts</option>
+        <option value="aluminium_cables">Aluminium Cables</option>
+    </select>
+
+    <div id="result"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#filter-dropdown').change(function() {
+                var field = $(this).val();
+                
+                if (field) {
+                    $.ajax({
+                        url: 'api.php',
+                        type: 'GET',
+                        data: { field: field },
+                        success: function(data) {
+                            var resultDiv = $('#result');
+                            resultDiv.empty();
+                            
+                            if (data.error) {
+                                resultDiv.append('<p>' + data.error + '</p>');
+                            } else {
+                                var list = $('<ul></ul>');
+                                data.forEach(function(item) {
+                                    list.append('<li>' + item + '</li>');
+                                });
+                                resultDiv.append(list);
+                            }
+                        },
+                        error: function() {
+                            $('#result').html('<p>An error occurred</p>');
+                        }
+                    });
+                } else {
+                    $('#result').empty();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
